@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, render_template
 import subprocess
 import pyttsx3
@@ -8,17 +9,21 @@ import ecapture as ec
 import pyjokes
 import datetime
 from twilio.rest import Client
-import os
 import requests
 
 app = Flask(__name__)
 
 # Initialize the text-to-speech engine
-engine = pyttsx3.init('sapi5')
+engine = pyttsx3.init()
 engine.setProperty('rate', 150)
 engine.setProperty('volume', 0.9)
+
+# Use espeak for cross-platform compatibility
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+for voice in voices:
+    if 'english' in voice.name.lower():
+        engine.setProperty('voice', voice.id)
+        break
 
 
 # Function to convert text to speech
