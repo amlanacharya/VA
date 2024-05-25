@@ -1,7 +1,6 @@
-import os
 from flask import Flask, request, render_template
 import subprocess
-import pyttsx3
+from gtts import gTTS
 import wikipedia
 import speech_recognition as sr
 import webbrowser
@@ -9,27 +8,18 @@ import ecapture as ec
 import pyjokes
 import datetime
 from twilio.rest import Client
+import os
 import requests
+import playsound
 
 app = Flask(__name__)
 
-# Initialize the text-to-speech engine
-engine = pyttsx3.init()
-engine.setProperty('rate', 150)
-engine.setProperty('volume', 0.9)
 
-# Use espeak for cross-platform compatibility
-voices = engine.getProperty('voices')
-for voice in voices:
-    if 'english' in voice.name.lower():
-        engine.setProperty('voice', voice.id)
-        break
-
-
-# Function to convert text to speech
+# Function to convert text to speech using gTTS
 def speak(text):
-    engine.say(text)
-    engine.runAndWait()
+    tts = gTTS(text=text, lang='en')
+    tts.save("response.mp3")
+    playsound.playsound("response.mp3")
 
 
 # Function to take voice input from the user (this will be modified for web input)
